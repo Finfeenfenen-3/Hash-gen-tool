@@ -1,5 +1,5 @@
-import hashlib
 import sys
+import hashlib
 
 print("Welcome to the:")
 print(r""" 
@@ -12,53 +12,63 @@ print(r"""
 """)
 print("version: 1.3")
 print("by felin_3")
-hashs = []
-def exit():
+
+hashes = []
+
+def exit_app():
     sys.exit()
+
 def generate_hash_table():
-    inputfile = input("print input_file;\n")
-    outputfile = input("print output_file(if none auto create outfile);\n")
-    if not outputfile:
-        outputfile = "hashout.txt"
+    input_file = input("Enter input file name:\n")
+    output_file = input("Enter output file name (leave empty to auto-create):\n")
+    
+    if not output_file:
+        output_file = "hashout.txt"
+
     def md5(data):
-            hash = hashlib.md5(data.encode()).hexdigest()
-            return hash
+        return hashlib.md5(data.encode()).hexdigest()
+
     def sha256(data):
-        hash = hashlib.sha256(data.encode()).hexdigest()
-        return hash
+        return hashlib.sha256(data.encode()).hexdigest()
+
     def sha3_512(data):
-        hash = hashlib.sha3_512(data.encode()).hexdigest()
-        return hash
-    with open(inputfile, "r") as file:
-        for line in file:
-            clean_line = line.strip()
-            hash_choice = int(input("1:md5 hash\n2:sha256 hash\n3:sha3_512 hash\n"))
-            hash_func = {
-                1: md5,
-                2: sha256,
-                3: sha3_512
-            }.get(hash_choice)
-            if not hash_func:
-                print("Invalid hash choice")
-                return
-            hashs.append(hash_func(clean_line) + "\n")
-    with open(outputfile, "w") as output_file:
-        output_file.writelines(hashs)
-        print("done\n")
+        return hashlib.sha3_512(data.encode()).hexdigest()
+
+    try:
+        with open(input_file, "r") as file:
+            for line in file:
+                clean_line = line.strip()
+                print(f"Processing line: '{clean_line}'")
+                hash_choice = int(input("Choose hash type:\n1: MD5\n2: SHA256\n3: SHA3-512\n"))
+                
+                hash_func = {
+                    1: md5,
+                    2: sha256,
+                    3: sha3_512
+                }.get(hash_choice)
+                
+                if not hash_func:
+                    print("Invalid choice. Please choose 1, 2, or 3.")
+                    return
+                
+                hashes.append(hash_func(clean_line) + "\n")
+        
+        with open(output_file, "w") as out_file:
+            out_file.writelines(hashes)
+            print(f"Hash table saved to {output_file}\n")
+            main()
+    except Exception as e:
+        print(f"Error: {e}")
         main()
-    actions_2 = {
-    1:md5,
-    2:sha256,
-    3:sha3_512
-}
 
 actions = {
-    0:exit,
-    1:generate_hash_table
+    0: exit_app,
+    1: generate_hash_table
 }
 
 def main():
-    choise = int(input("0: exit\n1: generate_hash_table\n"))
-    result = actions.get(choise, lambda: None)()
-if __name__ =="__main__":
+    choice = int(input("Select an option:\n0: Exit\n1: Generate hash table\n"))
+    actions.get(choice, lambda: None)()
+
+if __name__ == "__main__":
     main()
